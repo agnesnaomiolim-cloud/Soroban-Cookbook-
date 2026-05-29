@@ -2,15 +2,16 @@
 
 Fungible tokens, standards, wrappers.
 
-## 📋 Coming Soon
+## Token Examples
 
 ### SEP-41 Token
-**Soroban token interface**.
+A minimal SEP-41-compliant custom token implementation with metadata, transfer events, allowance support, minting, and burning.
 
 **Key Concepts:**
 - Mint/burn controls
 - Transfer/approval
 - Metadata
+- Transfer event emission
 
 ### Token Wrapper
 **Wrap native assets**.
@@ -20,8 +21,8 @@ Fungible tokens, standards, wrappers.
 - Burn/withdraw
 - Pausable emergency
 
-## Placeholder
-`examples/tokens/` directory ready.
+## Prerequisites
+- [Basics](../basics.md), [Auth](../basics/03-authentication)
 
 ## Prerequisites
 - [Basics](../basics.md), [Auth](../basics/03-authentication/)

@@ -8,9 +8,9 @@ This category contains examples related to fungible tokens, including implementa
 - **[Token Wrapper](./token-wrapper/)**: A 1:1 wrapper around an existing token with deposit, withdraw, backing checks, and invariant tests.
 - **Distribution Patterns**: Examples of vesting schedules and airdrop contracts.
 
-## Planned Examples
+## Examples
 
-- `01-sep41-token`: An implementation of the SEP-41 fungible token standard.
+- `01-sep41-token`: A minimal SEP-41-compliant fungible token contract.
 - `02-vesting-contract`: A contract that releases tokens to a beneficiary over time.
 - `03-airdrop-contract`: A contract to efficiently distribute tokens to a list of addresses.
 - `04-wrapped-asset`: A contract that creates a Soroban-native representation of a classic Stellar asset.
