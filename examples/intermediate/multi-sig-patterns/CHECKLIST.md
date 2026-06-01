@@ -28,7 +28,7 @@
 ### Integration
 - [x] Added to workspace (glob pattern)
 - [x] Updated intermediate/README.md
-- [x] Correct soroban-sdk version (21.7.0)
+- [x] Correct soroban-sdk version (26.0.0-rc.1)
 - [x] Follows repository conventions
 - [x] Compatible with CI/CD pipeline
 
@@ -99,4 +99,4 @@ The implementation is complete and ready for:
 
 **Status**: ✅ COMPLETE - All acceptance criteria met and exceeded
 **Priority**: High (as specified in issue)
-**Location**: `examples/intermediate/multi-party-auth/`
+**Location**: `examples/intermediate/multi-sig-patterns/`

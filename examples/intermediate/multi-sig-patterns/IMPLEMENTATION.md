@@ -4,7 +4,7 @@
 Implemented comprehensive multi-party authorization patterns for Issue #50, demonstrating how to require multiple signers to approve actions in Soroban smart contracts.
 
 ## Location
-`examples/intermediate/multi-party-auth/`
+`examples/intermediate/multi-sig-patterns/`
 
 ## Files Created
 
@@ -82,7 +82,7 @@ All tests pass and cover:
 - Added to workspace members via glob pattern
 - Updated intermediate examples README
 - Follows repository structure and conventions
-- Uses workspace soroban-sdk version (21.7.0)
+- Uses workspace soroban-sdk version (26.0.0-rc.1)
 
 ## Next Steps for Users
 1. Clone and test the example

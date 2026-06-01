@@ -1,5 +1,5 @@
 use super::*;
-use soroban_sdk::{testutils::Address as _, vec, Address, Env};
+use soroban_sdk::{testutils::Address as _, vec, Address, Env, Symbol, TryFromVal};
 
 #[test]
 fn test_initialize() {
@@ -59,6 +59,44 @@ fn test_create_and_approve_proposal() {
     let proposal = client.get_proposal(&proposal_id);
     assert_eq!(proposal.approvals.len(), 2);
     assert!(!proposal.executed);
+}
+
+#[test]
+fn test_proposal_lifecycle_events() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let contract_id = env.register_contract(None, MultiPartyAuth);
+    let client = MultiPartyAuthClient::new(&env, &contract_id);
+
+    let signer1 = Address::generate(&env);
+    let signer2 = Address::generate(&env);
+    let signer3 = Address::generate(&env);
+    let signers = vec![&env, signer1.clone(), signer2.clone(), signer3.clone()];
+
+    client.initialize(&2, &signers);
+
+    let proposal_id = client.create_proposal(&signer1);
+    client.approve(&proposal_id, &signer1);
+    client.approve(&proposal_id, &signer2);
+    client.execute(&proposal_id, &signer1);
+
+    let events = env.events().all();
+    assert_eq!(events.len(), 3);
+
+    let (_id, topics, _data) = events.get(0).unwrap();
+    let namespace: Symbol = Symbol::try_from_val(&env, &topics.get(0).unwrap()).unwrap();
+    let action: Symbol = Symbol::try_from_val(&env, &topics.get(1).unwrap()).unwrap();
+    assert_eq!(namespace, CONTRACT_NS);
+    assert_eq!(action, ACTION_PROPOSAL_CREATED);
+
+    let (_id, topics, _data) = events.get(1).unwrap();
+    let action: Symbol = Symbol::try_from_val(&env, &topics.get(1).unwrap()).unwrap();
+    assert_eq!(action, ACTION_PROPOSAL_APPROVED);
+
+    let (_id, topics, _data) = events.get(2).unwrap();
+    let action: Symbol = Symbol::try_from_val(&env, &topics.get(1).unwrap()).unwrap();
+    assert_eq!(action, ACTION_PROPOSAL_EXECUTED);
 }
 
 #[test]

@@ -6,7 +6,10 @@ This example demonstrates patterns for requiring multiple parties to authorize a
 
 - **Threshold Signatures**: Require N-of-M signers to approve actions
 - **Proposal-Based Approvals**: Sequential approval workflow for multi-party decisions
-- **Authorization Vectors**: Require multiple addresses in a single transaction- ✅ Proposal cancellation: Abort a proposal before execution- **Multi-Sig Patterns**: Common use cases for multi-party authorization
+- **Authorization Vectors**: Require multiple addresses in a single transaction
+- ✅ **Proposal cancellation**: Abort a proposal before execution
+- **Multi-Sig Patterns**: Common use cases for multi-party authorization
+- **Proposal events**: Track lifecycle changes for creation, approval, execution, and cancellation
 
 ## 🔍 Contract Overview
 

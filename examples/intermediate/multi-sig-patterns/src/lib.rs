@@ -5,7 +5,10 @@
 
 #![no_std]
 
-use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Address, Env, Vec};
+use soroban_sdk::{
+    contract, contracterror, contractimpl, contracttype, symbol_short, Address, Env, Symbol,
+    Vec,
+};
 
 #[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -37,6 +40,21 @@ pub struct Proposal {
     pub approvals: Vec<Address>,
     pub executed: bool,
     pub cancelled: bool,
+}
+
+const CONTRACT_NS: Symbol = symbol_short!("multi_sig");
+const ACTION_PROPOSAL_CREATED: Symbol = symbol_short!("proposal_created");
+const ACTION_PROPOSAL_APPROVED: Symbol = symbol_short!("proposal_approved");
+const ACTION_PROPOSAL_EXECUTED: Symbol = symbol_short!("proposal_executed");
+const ACTION_PROPOSAL_CANCELLED: Symbol = symbol_short!("proposal_cancelled");
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ProposalEvent {
+    pub actor: Address,
+    pub proposal_id: u32,
+    pub approvals: u32,
+    pub status: Symbol,
 }
 
 #[contract]
@@ -97,6 +115,16 @@ impl MultiPartyAuth {
             .instance()
             .set(&DataKey::ProposalCount, &(count + 1));
 
+        env.events().publish(
+            (CONTRACT_NS, ACTION_PROPOSAL_CREATED, proposer.clone()),
+            ProposalEvent {
+                actor: proposer,
+                proposal_id,
+                approvals: 0,
+                status: ACTION_PROPOSAL_CREATED,
+            },
+        );
+
         Ok(proposal_id)
     }
 
@@ -132,10 +160,20 @@ impl MultiPartyAuth {
             return Err(AuthError::AlreadyApproved);
         }
 
-        proposal.approvals.push_back(signer);
+        proposal.approvals.push_back(signer.clone());
         env.storage()
             .persistent()
             .set(&DataKey::Proposal(proposal_id), &proposal);
+
+        env.events().publish(
+            (CONTRACT_NS, ACTION_PROPOSAL_APPROVED, signer.clone()),
+            ProposalEvent {
+                actor: signer,
+                proposal_id,
+                approvals: proposal.approvals.len(),
+                status: ACTION_PROPOSAL_APPROVED,
+            },
+        );
 
         Ok(())
     }
@@ -173,6 +211,16 @@ impl MultiPartyAuth {
             .persistent()
             .set(&DataKey::Proposal(proposal_id), &proposal);
 
+        env.events().publish(
+            (CONTRACT_NS, ACTION_PROPOSAL_EXECUTED, executor.clone()),
+            ProposalEvent {
+                actor: executor,
+                proposal_id,
+                approvals: proposal.approvals.len(),
+                status: ACTION_PROPOSAL_EXECUTED,
+            },
+        );
+
         Ok(true)
     }
 
@@ -208,6 +256,16 @@ impl MultiPartyAuth {
         env.storage()
             .persistent()
             .set(&DataKey::Proposal(proposal_id), &proposal);
+
+        env.events().publish(
+            (CONTRACT_NS, ACTION_PROPOSAL_CANCELLED, canceller.clone()),
+            ProposalEvent {
+                actor: canceller,
+                proposal_id,
+                approvals: proposal.approvals.len(),
+                status: ACTION_PROPOSAL_CANCELLED,
+            },
+        );
 
         Ok(())
     }
